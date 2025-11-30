@@ -1,0 +1,113 @@
+/* src/AppStyles.css - Versión Funcional y Estilizada */
+
+/* ---------------------------------------------------- */
+/* 1. Variables Globales y Funcionales */
+/* ---------------------------------------------------- */
+
+:root {
+  /* Colores Funcionales */
+  --nebrija-red: #dc3545; /* Color primario de la marca (Danger de Bootstrap) */
+  --nebrija-red-hover: #c82333; /* Un rojo ligeramente más oscuro para el hover */
+  --nebrija-focus-color: rgba(220, 53, 69, 0.25); /* Color de foco/sombra suave del rojo */
+  
+  /* Sombras y Geometría */
+  --shadow-sm-custom: 0 0.1rem 0.4rem rgba(0, 0, 0, 0.08);
+  --shadow-lg-custom: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15);
+  --border-radius: 0.75rem; 
+  --transition-speed: 0.3s; /* Variable para transiciones uniformes */
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f7f9fc; 
+}
+
+/* ---------------------------------------------------- */
+/* 2. Enfoque y Accesibilidad (Focus States) */
+/* ---------------------------------------------------- */
+
+/* Sobrescribe el foco por defecto de Bootstrap para darle el toque rojo
+   a todos los inputs, botones y enlaces con focus visible. */
+.form-control:focus, 
+.btn:focus,
+.list-group-item:focus,
+.accordion-button:focus,
+.input-group:focus-within { /* focus-within es funcional para el grupo de búsqueda */
+    box-shadow: 0 0 0 0.25rem var(--nebrija-focus-color) !important;
+    border-color: var(--nebrija-red) !important;
+    outline: 0;
+}
+
+/* ---------------------------------------------------- */
+/* 3. Estilos de Tarjetas (CourseCard.jsx) */
+/* ---------------------------------------------------- */
+
+.card {
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm-custom);
+}
+
+/* Clases funcionales para la interacción del usuario */
+.transition-shadow {
+    transition: box-shadow var(--transition-speed) ease, transform 0.2s ease;
+}
+
+.hover-shadow-lg:hover {
+    box-shadow: var(--shadow-lg-custom) !important;
+    /* Efecto de elevación sutil para indicar interactividad */
+    transform: translateY(-3px); 
+}
+
+/* Aseguramos que el contenido del enlace dentro de la tarjeta no se vea azul */
+.card a {
+    color: inherit;
+}
+
+/* ---------------------------------------------------- */
+/* 4. Overrides de Componentes (Filtros y Búsqueda) */
+/* ---------------------------------------------------- */
+
+/* Estilo para los filtros activos (Página 1 y 6) */
+.list-group-item.active {
+    color: var(--nebrija-red) !important;
+    background-color: #fcebeb !important; 
+    border-color: var(--nebrija-red) !important;
+    font-weight: 600 !important;
+    border-radius: 0.5rem !important;
+    /* Añadimos una transición para que el cambio de activo sea suave */
+    transition: all var(--transition-speed) ease;
+}
+
+/* Estilo de los botones no activos en los filtros (mejor interacción) */
+.list-group-item:not(.active):hover {
+    background-color: #eee !important;
+}
+
+/* Barra de Búsqueda (Input Group de Bootstrap) */
+.input-group.shadow-sm {
+    box-shadow: var(--shadow-sm-custom) !important;
+    border-radius: var(--border-radius);
+    overflow: hidden; 
+}
+
+.input-group .btn-danger {
+    background-color: var(--nebrija-red);
+    transition: background-color var(--transition-speed) ease;
+}
+
+/* Efecto hover en el botón de búsqueda */
+.input-group .btn-danger:hover {
+    background-color: var(--nebrija-red-hover);
+}
+
+
+/* ---------------------------------------------------- */
+/* 5. Ajustes de Pantalla (CourseProgressCard.jsx) */
+/* ---------------------------------------------------- */
+
+/* Asegura que el scroll horizontal en SavedCoursesScreen sea fluido */
+.d-flex.overflow-auto {
+    /* Añade inercia al scroll en navegadores basados en Webkit (Chrome, Safari) */
+    -webkit-overflow-scrolling: touch; 
+}
