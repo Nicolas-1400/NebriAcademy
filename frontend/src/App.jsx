@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 
 import MainLayout from './components/MainLayout.jsx';
 import CourseList from './components/CourseList.jsx'; 
@@ -9,14 +9,10 @@ import NebrijaConfirmationScreen from './components/NebrijaConfirmationScreen.js
 import SavedCoursesScreen from './components/SavedCoursesScreen.jsx';
 import ProfileScreen from './components/ProfileScreen.jsx';
 
-
-// --- 1. Definición del Layout con Navbar ---
-// Usaremos un componente LayoutRoute que siempre renderiza MainLayout
-// y anidará las rutas que necesiten la Navbar (Cursos, Perfil, Academia)
+// Layout que siempre muestra MainLayout y renderiza la ruta anidada
 const LayoutRoute = () => (
   <MainLayout>
-    {/* Outlet renderizará el componente de la ruta anidada */}
-    <Outlet /> 
+    <Outlet />
   </MainLayout>
 );
 
@@ -24,35 +20,18 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        
-        {/* --- 1. Rutas Públicas (SIN Layout) --- */}
+
+        {/* Rutas públicas (sin navbar) */}
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/confirm-nebrija" element={<NebrijaConfirmationScreen />} />
 
-        {/* --- 2. Rutas con el Layout (CON Navbar) --- */}
-        {/* Usamos el componente MainLayout directamente en cada ruta que lo necesite */}
-        
-        <Route 
-          path="/" 
-          element={<MainLayout><CourseList /></MainLayout>} 
-        />
-        
-        <Route 
-          path="/course/:id" 
-          element={<MainLayout><CourseDetailScreen /></MainLayout>} 
-        />
+        {/* Rutas con navbar (usando MainLayout) */}
+        <Route path="/" element={<MainLayout><CourseList /></MainLayout>} />
+        <Route path="/course/:id" element={<MainLayout><CourseDetailScreen /></MainLayout>} />
+        <Route path="/my-academy" element={<MainLayout><SavedCoursesScreen /></MainLayout>} />
+        <Route path="/profile" element={<MainLayout><ProfileScreen /></MainLayout>} />
 
-        <Route 
-          path="/my-academy" 
-          element={<MainLayout><SavedCoursesScreen /></MainLayout>} 
-        />
-
-        <Route 
-          path="/profile" 
-          element={<MainLayout><ProfileScreen /></MainLayout>} 
-        />
-
-        {/* --- Ruta de Error 404 --- */}
+        {/* 404 */}
         <Route path="*" element={<h1 className="text-center mt-5">404 - Página no encontrada</h1>} />
 
       </Routes>
