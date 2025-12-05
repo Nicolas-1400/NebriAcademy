@@ -1,0 +1,12 @@
+{
+  "usuarioId": 1,
+  "dni": "12345678A",
+  "nombre": "María",
+  "apellidos": "García Pérez",
+  "email": "maria.garcia@example.com",
+  "contrasena": "pass1234",
+  "numTelefono": "+34600111222",
+  "redes": "twitter:@mgarcia",
+  "pais": "España",
+  "localidad": "Madrid"
+}

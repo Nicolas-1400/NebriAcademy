@@ -1,0 +1,6 @@
+{
+  "tipo": "bug",
+  "descripcion": "No se puede acceder al curso 1 mediante la API",
+  "resuelto": false,
+  "usuario": 2
+}
