@@ -3,16 +3,22 @@ const path = require('path');
 const sequelize = require('../database/connection');
 const ProfesoresCursos = require('../models/ProfesoresCursos');
 
-const jsonPath = path.join(__dirname, '..', 'test-jsons', 'profesoresCursos.json');
-function readSample(){return JSON.parse(fs.readFileSync(jsonPath,'utf8'));}
+const rutaJson = path.join(__dirname, '..', 'test-jsons', 'profesoresCursos.json');
+// Lee el archivo JSON de ejemplo
+function leerMuestra(){return JSON.parse(fs.readFileSync(rutaJson,'utf8'));}
 
-async function createProfesorCurso(data){const c=await ProfesoresCursos.create(data);console.log('createProfesorCurso:',c.toJSON());return c}
-async function getProfesoresCursos(){const rows=await ProfesoresCursos.findAll();console.log('getProfesoresCursos count=',rows.length);return rows.map(r=>r.toJSON())}
-async function updateProfesorCurso(id,changes){const inst=await ProfesoresCursos.findByPk(id);if(!inst)return null;Object.keys(changes).forEach(k=>inst.set(k,changes[k]));await inst.save();console.log('updateProfesorCurso:',inst.toJSON());return inst}
-async function deleteProfesorCurso(id){const inst=await ProfesoresCursos.findByPk(id);if(!inst)return false;await inst.destroy();console.log('deleteProfesorCurso id=',id);return true}
+// Crea una nueva relación profesor-curso
+async function crearProfesorCurso(datos){const creado=await ProfesoresCursos.create(datos);console.log('crearProfesorCurso:',creado.toJSON());return creado}
+// Obtiene todas las relaciones profesor-curso
+async function obtenerProfesoresCursos(){const filas=await ProfesoresCursos.findAll();console.log('obtenerProfesoresCursos count=',filas.length);return filas.map(f=>f.toJSON())}
+// Actualiza una relación profesor-curso por id
+async function actualizarProfesorCurso(id,cambios){const inst=await ProfesoresCursos.findByPk(id);if(!inst)return null;Object.keys(cambios).forEach(k=>inst.set(k,cambios[k]));await inst.save();console.log('actualizarProfesorCurso:',inst.toJSON());return inst}
+// Elimina una relación profesor-curso por id
+async function eliminarProfesorCurso(id){const inst=await ProfesoresCursos.findByPk(id);if(!inst)return false;await inst.destroy();console.log('eliminarProfesorCurso id=',id);return true}
 
-async function demo(){try{await sequelize.sync();console.log('Demo ProfesoresCursos');await getProfesoresCursos();const sample=readSample();const c=await createProfesorCurso(sample);await getProfesoresCursos();await updateProfesorCurso(c.id||c[ProfesoresCursos.primaryKeyAttribute],{profesorId:sample.profesorId});await deleteProfesorCurso(c.id||c[ProfesoresCursos.primaryKeyAttribute]);await sequelize.close();console.log('Demo ProfesoresCursos done')}catch(err){console.error(err.message||err);try{await sequelize.close()}catch(e){}process.exit(1)}}
+// Demo de uso
+async function demostración(){try{await sequelize.sync();console.log('Demostración ProfesoresCursos');await obtenerProfesoresCursos();const muestra=leerMuestra();const creado=await crearProfesorCurso(muestra);await obtenerProfesoresCursos();await actualizarProfesorCurso(creado.id||creado[ProfesoresCursos.primaryKeyAttribute],{profesorId:muestra.profesorId});await eliminarProfesorCurso(creado.id||creado[ProfesoresCursos.primaryKeyAttribute]);await sequelize.close();console.log('Demostración ProfesoresCursos completada')}catch(err){console.error(err.message||err);try{await sequelize.close()}catch(e){}process.exit(1)}}
 
-if(require.main===module) demo();
+if(require.main===module) demostración();
 
-module.exports={createProfesorCurso,getProfesoresCursos,updateProfesorCurso,deleteProfesorCurso};
+module.exports={crearProfesorCurso,obtenerProfesoresCursos,actualizarProfesorCurso,eliminarProfesorCurso};

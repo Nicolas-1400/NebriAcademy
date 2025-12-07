@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-
+// Configuración de conexión a la base de datos MySQL
 const sequelize = new Sequelize(
     'nebriacademy', 
     'root',  
@@ -10,6 +10,7 @@ const sequelize = new Sequelize(
       dialect: 'mysql'
     });
 
+// Verifica la conexión a la base de datos
 sequelize.authenticate().then(() => {
     console.log('Conexión establecida correctamente.');
 

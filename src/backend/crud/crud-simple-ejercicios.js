@@ -3,16 +3,22 @@ const path = require('path');
 const sequelize = require('../database/connection');
 const Ejercicios = require('../models/Ejercicios');
 
-const jsonPath = path.join(__dirname, '..', 'test-jsons', 'ejercicios.json');
-function readSample(){return JSON.parse(fs.readFileSync(jsonPath,'utf8'));}
+const rutaJson = path.join(__dirname, '..', 'test-jsons', 'ejercicios.json');
+// Lee el archivo JSON de ejemplo
+function leerMuestra(){return JSON.parse(fs.readFileSync(rutaJson,'utf8'));}
 
-async function createEjercicio(data){const c=await Ejercicios.create(data);console.log('createEjercicio:',c.toJSON());return c}
-async function getEjercicios(){const rows=await Ejercicios.findAll();console.log('getEjercicios count=',rows.length);return rows.map(r=>r.toJSON())}
-async function updateEjercicio(id,changes){const inst=await Ejercicios.findByPk(id);if(!inst)return null;Object.keys(changes).forEach(k=>inst.set(k,changes[k]));await inst.save();console.log('updateEjercicio:',inst.toJSON());return inst}
-async function deleteEjercicio(id){const inst=await Ejercicios.findByPk(id);if(!inst)return false;await inst.destroy();console.log('deleteEjercicio id=',id);return true}
+// Crea un nuevo ejercicio
+async function crearEjercicio(datos){const creado=await Ejercicios.create(datos);console.log('crearEjercicio:',creado.toJSON());return creado}
+// Obtiene todos los ejercicios
+async function obtenerEjercicios(){const filas=await Ejercicios.findAll();console.log('obtenerEjercicios count=',filas.length);return filas.map(f=>f.toJSON())}
+// Actualiza un ejercicio por id
+async function actualizarEjercicio(id,cambios){const inst=await Ejercicios.findByPk(id);if(!inst)return null;Object.keys(cambios).forEach(k=>inst.set(k,cambios[k]));await inst.save();console.log('actualizarEjercicio:',inst.toJSON());return inst}
+// Elimina un ejercicio por id
+async function eliminarEjercicio(id){const inst=await Ejercicios.findByPk(id);if(!inst)return false;await inst.destroy();console.log('eliminarEjercicio id=',id);return true}
 
-async function demo(){try{await sequelize.sync();console.log('Demo Ejercicios');await getEjercicios();const sample=readSample();const c=await createEjercicio(sample);await getEjercicios();await updateEjercicio(c.id||c[Ejercicios.primaryKeyAttribute],{valoracion:(sample.valoracion||0)+1});await deleteEjercicio(c.id||c[Ejercicios.primaryKeyAttribute]);await sequelize.close();console.log('Demo Ejercicios done')}catch(err){console.error(err.message||err);try{await sequelize.close()}catch(e){}process.exit(1)}}
+// Demo de uso
+async function demostración(){try{await sequelize.sync();console.log('Demostración Ejercicios');await obtenerEjercicios();const muestra=leerMuestra();const creado=await crearEjercicio(muestra);await obtenerEjercicios();await actualizarEjercicio(creado.id||creado[Ejercicios.primaryKeyAttribute],{valoracion:(muestra.valoracion||0)+1});await eliminarEjercicio(creado.id||creado[Ejercicios.primaryKeyAttribute]);await sequelize.close();console.log('Demostración Ejercicios completada')}catch(err){console.error(err.message||err);try{await sequelize.close()}catch(e){}process.exit(1)}}
 
-if(require.main===module) demo();
+if(require.main===module) demostración();
 
-module.exports={createEjercicio,getEjercicios,updateEjercicio,deleteEjercicio};
+module.exports={crearEjercicio,obtenerEjercicios,actualizarEjercicio,eliminarEjercicio};

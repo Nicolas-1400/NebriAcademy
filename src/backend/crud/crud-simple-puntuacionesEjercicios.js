@@ -3,16 +3,22 @@ const path = require('path');
 const sequelize = require('../database/connection');
 const PuntuacionesEjercicios = require('../models/PuntuacionesEjercicios');
 
-const jsonPath = path.join(__dirname, '..', 'test-jsons', 'puntuacionesEjercicios.json');
-function readSample(){return JSON.parse(fs.readFileSync(jsonPath,'utf8'));}
+const rutaJson = path.join(__dirname, '..', 'test-jsons', 'puntuacionesEjercicios.json');
+// Lee el archivo JSON de ejemplo
+function leerMuestra(){return JSON.parse(fs.readFileSync(rutaJson,'utf8'));}
 
-async function createPuntuacionEjercicio(data){const c=await PuntuacionesEjercicios.create(data);console.log('createPuntuacionEjercicio:',c.toJSON());return c}
-async function getPuntuacionesEjercicios(){const rows=await PuntuacionesEjercicios.findAll();console.log('count=',rows.length);return rows.map(r=>r.toJSON())}
-async function updatePuntuacionEjercicio(id,changes){const inst=await PuntuacionesEjercicios.findByPk(id);if(!inst)return null;Object.keys(changes).forEach(k=>inst.set(k,changes[k]));await inst.save();console.log('update:',inst.toJSON());return inst}
-async function deletePuntuacionEjercicio(id){const inst=await PuntuacionesEjercicios.findByPk(id);if(!inst)return false;await inst.destroy();console.log('delete id=',id);return true}
+// Crea una nueva puntuación de ejercicio
+async function crearPuntuacionEjercicio(datos){const creado=await PuntuacionesEjercicios.create(datos);console.log('crearPuntuacionEjercicio:',creado.toJSON());return creado}
+// Obtiene todas las puntuaciones de ejercicios
+async function obtenerPuntuacionesEjercicios(){const filas=await PuntuacionesEjercicios.findAll();console.log('count=',filas.length);return filas.map(f=>f.toJSON())}
+// Actualiza una puntuación de ejercicio por id
+async function actualizarPuntuacionEjercicio(id,cambios){const inst=await PuntuacionesEjercicios.findByPk(id);if(!inst)return null;Object.keys(cambios).forEach(k=>inst.set(k,cambios[k]));await inst.save();console.log('actualizar:',inst.toJSON());return inst}
+// Elimina una puntuación de ejercicio por id
+async function eliminarPuntuacionEjercicio(id){const inst=await PuntuacionesEjercicios.findByPk(id);if(!inst)return false;await inst.destroy();console.log('eliminar id=',id);return true}
 
-async function demo(){try{await sequelize.sync();console.log('Demo PuntuacionesEjercicios');await getPuntuacionesEjercicios();const sample=readSample();const c=await createPuntuacionEjercicio(sample);await getPuntuacionesEjercicios();await updatePuntuacionEjercicio(c.id||c[PuntuacionesEjercicios.primaryKeyAttribute],{puntuacion:(sample.puntuacion||0)+1});await deletePuntuacionEjercicio(c.id||c[PuntuacionesEjercicios.primaryKeyAttribute]);await sequelize.close();console.log('Demo done')}catch(err){console.error(err.message||err);try{await sequelize.close()}catch(e){}process.exit(1)}}
+// Demo de uso
+async function demostración(){try{await sequelize.sync();console.log('Demostración PuntuacionesEjercicios');await obtenerPuntuacionesEjercicios();const muestra=leerMuestra();const creado=await crearPuntuacionEjercicio(muestra);await obtenerPuntuacionesEjercicios();await actualizarPuntuacionEjercicio(creado.id||creado[PuntuacionesEjercicios.primaryKeyAttribute],{puntuacion:(muestra.puntuacion||0)+1});await eliminarPuntuacionEjercicio(creado.id||creado[PuntuacionesEjercicios.primaryKeyAttribute]);await sequelize.close();console.log('Demostración completada')}catch(err){console.error(err.message||err);try{await sequelize.close()}catch(e){}process.exit(1)}}
 
-if(require.main===module) demo();
+if(require.main===module) demostración();
 
-module.exports={createPuntuacionEjercicio,getPuntuacionesEjercicios,updatePuntuacionEjercicio,deletePuntuacionEjercicio};
+module.exports={crearPuntuacionEjercicio,obtenerPuntuacionesEjercicios,actualizarPuntuacionEjercicio,eliminarPuntuacionEjercicio};

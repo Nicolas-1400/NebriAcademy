@@ -3,54 +3,60 @@ const path = require('path');
 const sequelize = require('../database/connection');
 const Administradores = require('../models/Administradores');
 
-const jsonPath = path.join(__dirname, '..', 'test-jsons', 'administradores.json');
+const rutaJson = path.join(__dirname, '..', 'test-jsons', 'administradores.json');
 
-function readSample() {
-  const raw = fs.readFileSync(jsonPath, 'utf8');
-  return JSON.parse(raw);
+// Lee el archivo JSON de ejemplo
+function leerMuestra() {
+  const contenido = fs.readFileSync(rutaJson, 'utf8');
+  return JSON.parse(contenido);
 }
 
-async function createAdministrador(data) {
-  const created = await Administradores.create(data);
-  console.log('createAdministrador:', created.toJSON());
-  return created;
+// Crea un nuevo administrador
+async function crearAdministrador(datos) {
+  const creado = await Administradores.create(datos);
+  console.log('crearAdministrador:', creado.toJSON());
+  return creado;
 }
 
-async function getAdministradores() {
-  const rows = await Administradores.findAll();
-  console.log('getAdministradores: count=', rows.length);
-  return rows.map(r => r.toJSON());
+// Obtiene todos los administradores
+async function obtenerAdministradores() {
+  const filas = await Administradores.findAll();
+  console.log('obtenerAdministradores: count=', filas.length);
+  return filas.map(f => f.toJSON());
 }
 
-async function updateAdministrador(id, changes) {
+// Actualiza un administrador por id
+async function actualizarAdministrador(id, cambios) {
   const inst = await Administradores.findByPk(id);
   if (!inst) return null;
-  Object.keys(changes).forEach(k => inst.set(k, changes[k]));
+  Object.keys(cambios).forEach(k => inst.set(k, cambios[k]));
   await inst.save();
-  console.log('updateAdministrador:', inst.toJSON());
+  console.log('actualizarAdministrador:', inst.toJSON());
   return inst;
 }
 
-async function deleteAdministrador(id) {
+// Elimina un administrador por id
+async function eliminarAdministrador(id) {
   const inst = await Administradores.findByPk(id);
   if (!inst) return false;
   await inst.destroy();
-  console.log('deleteAdministrador id=', id);
+  console.log('eliminarAdministrador id=', id);
   return true;
 }
 
-async function demo() {
+// Demo de uso
+async function demostración() {
   try {
     await sequelize.sync();
-    console.log('Demo Administradores');
-    await getAdministradores();
-    const sample = readSample();
-    const c = await createAdministrador(sample);
-    await getAdministradores();
-    await updateAdministrador(c.id || c[Administradores.primaryKeyAttribute], { nombre: (sample.nombre || '') + ' - demo' });
-    await deleteAdministrador(c.id || c[Administradores.primaryKeyAttribute]);
+    console.log('Demostración Administradores');
+    await obtenerAdministradores();
+    const muestra = leerMuestra();
+    const creado = await crearAdministrador(muestra);
+    await obtenerAdministradores();
+    await actualizarAdministrador(creado.id || creado[Administradores.primaryKeyAttribute], { nombre: (muestra.nombre || '') + ' - demostración' });
+    await eliminarAdministrador(creado.id || creado[Administradores.primaryKeyAttribute]);
     await sequelize.close();
-    console.log('Demo Administradores done');
+    console.log('Demostración Administradores completada');
   } catch (err) {
     console.error(err.message || err);
     try { await sequelize.close(); } catch (e) {}
@@ -58,6 +64,8 @@ async function demo() {
   }
 }
 
-if (require.main === module) demo();
+if (require.main === module) {
+  demostración();
+}
 
-module.exports = { createAdministrador, getAdministradores, updateAdministrador, deleteAdministrador };
+module.exports = { crearAdministrador, obtenerAdministradores, actualizarAdministrador, eliminarAdministrador };

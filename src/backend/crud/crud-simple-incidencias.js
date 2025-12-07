@@ -3,16 +3,22 @@ const path = require('path');
 const sequelize = require('../database/connection');
 const Incidencias = require('../models/Incidencias');
 
-const jsonPath = path.join(__dirname, '..', 'test-jsons', 'incidencias.json');
-function readSample(){return JSON.parse(fs.readFileSync(jsonPath,'utf8'));}
+const rutaJson = path.join(__dirname, '..', 'test-jsons', 'incidencias.json');
+// Lee el archivo JSON de ejemplo
+function leerMuestra(){return JSON.parse(fs.readFileSync(rutaJson,'utf8'));}
 
-async function createIncidencia(data){const c=await Incidencias.create(data);console.log('createIncidencia:',c.toJSON());return c}
-async function getIncidencias(){const rows=await Incidencias.findAll();console.log('getIncidencias count=',rows.length);return rows.map(r=>r.toJSON())}
-async function updateIncidencia(id,changes){const inst=await Incidencias.findByPk(id);if(!inst)return null;Object.keys(changes).forEach(k=>inst.set(k,changes[k]));await inst.save();console.log('updateIncidencia:',inst.toJSON());return inst}
-async function deleteIncidencia(id){const inst=await Incidencias.findByPk(id);if(!inst)return false;await inst.destroy();console.log('deleteIncidencia id=',id);return true}
+// Crea una nueva incidencia
+async function crearIncidencia(datos){const creado=await Incidencias.create(datos);console.log('crearIncidencia:',creado.toJSON());return creado}
+// Obtiene todas las incidencias
+async function obtenerIncidencias(){const filas=await Incidencias.findAll();console.log('obtenerIncidencias count=',filas.length);return filas.map(f=>f.toJSON())}
+// Actualiza una incidencia por id
+async function actualizarIncidencia(id,cambios){const inst=await Incidencias.findByPk(id);if(!inst)return null;Object.keys(cambios).forEach(k=>inst.set(k,cambios[k]));await inst.save();console.log('actualizarIncidencia:',inst.toJSON());return inst}
+// Elimina una incidencia por id
+async function eliminarIncidencia(id){const inst=await Incidencias.findByPk(id);if(!inst)return false;await inst.destroy();console.log('eliminarIncidencia id=',id);return true}
 
-async function demo(){try{await sequelize.sync();console.log('Demo Incidencias');await getIncidencias();const sample=readSample();const c=await createIncidencia(sample);await getIncidencias();await updateIncidencia(c.id||c[Incidencias.primaryKeyAttribute],{tipo:(sample.tipo||'')+' - demo'});await deleteIncidencia(c.id||c[Incidencias.primaryKeyAttribute]);await sequelize.close();console.log('Demo Incidencias done')}catch(err){console.error(err.message||err);try{await sequelize.close()}catch(e){}process.exit(1)}}
+// Demo de uso
+async function demostración(){try{await sequelize.sync();console.log('Demostración Incidencias');await obtenerIncidencias();const muestra=leerMuestra();const creado=await crearIncidencia(muestra);await obtenerIncidencias();await actualizarIncidencia(creado.id||creado[Incidencias.primaryKeyAttribute],{tipo:(muestra.tipo||'')+' - demostración'});await eliminarIncidencia(creado.id||creado[Incidencias.primaryKeyAttribute]);await sequelize.close();console.log('Demostración Incidencias completada')}catch(err){console.error(err.message||err);try{await sequelize.close()}catch(e){}process.exit(1)}}
 
-if(require.main===module) demo();
+if(require.main===module) demostración();
 
-module.exports={createIncidencia,getIncidencias,updateIncidencia,deleteIncidencia};
+module.exports={crearIncidencia,obtenerIncidencias,actualizarIncidencia,eliminarIncidencia};

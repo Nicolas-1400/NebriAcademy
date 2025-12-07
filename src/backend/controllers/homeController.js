@@ -1,11 +1,12 @@
-module.exports = (Model) => ({
+module.exports = (Modelo) => ({
+  // Obtiene todos los registros
   getAll: async (req, res) => {
     try {
-      const rows = await Model.findAll();
+      const filas = await Modelo.findAll();
       res.status(200).json({
         success: true,
-        count: rows.length,
-        data: rows
+        count: filas.length,
+        data: filas
       });
     } catch (err) {
       console.error(`[ERROR] getAll:`, err.message);
@@ -17,6 +18,7 @@ module.exports = (Model) => ({
     }
   },
 
+  // Obtiene un registro por ID
   getById: async (req, res) => {
     try {
       if (!req.params.id || isNaN(req.params.id)) {
@@ -25,8 +27,8 @@ module.exports = (Model) => ({
           error: 'ID inválido'
         });
       }
-      const row = await Model.findByPk(req.params.id);
-      if (!row) {
+      const fila = await Modelo.findByPk(req.params.id);
+      if (!fila) {
         return res.status(404).json({
           success: false,
           error: 'Registro no encontrado',
@@ -35,7 +37,7 @@ module.exports = (Model) => ({
       }
       res.status(200).json({
         success: true,
-        data: row
+        data: fila
       });
     } catch (err) {
       console.error(`[ERROR] getById:`, err.message);
@@ -47,6 +49,7 @@ module.exports = (Model) => ({
     }
   },
 
+  // Crea un nuevo registro
   create: async (req, res) => {
     try {
       if (!req.body || Object.keys(req.body).length === 0) {
@@ -56,35 +59,33 @@ module.exports = (Model) => ({
           message: 'El cuerpo de la solicitud no puede estar vacío'
         });
       }
-      const created = await Model.create(req.body);
+      const creado = await Modelo.create(req.body);
       res.status(201).json({
         success: true,
         message: 'Registro creado exitosamente',
-        data: created
+        data: creado
       });
     } catch (err) {
       console.error(`[ERROR] create:`, err.message);
-      
-      // Manejo específico de errores de validación Sequelize
       if (err.name === 'SequelizeUniqueConstraintError') {
-        const fields = err.errors.map(e => e.path).join(', ');
+        const campos = err.errors.map(e => e.path).join(', ');
         return res.status(409).json({
           success: false,
           error: 'Conflicto: Campo duplicado',
-          fields: fields,
-          message: `Los campos ${fields} ya existen en la base de datos`
+          fields: campos,
+          message: `Los campos ${campos} ya existen en la base de datos`
         });
       }
       
       if (err.name === 'SequelizeValidationError') {
-        const errors = err.errors.map(e => ({
+        const errores = err.errors.map(e => ({
           field: e.path,
           message: e.message
         }));
         return res.status(422).json({
           success: false,
           error: 'Error de validación',
-          validationErrors: errors
+          validationErrors: errores
         });
       }
       
@@ -97,7 +98,6 @@ module.exports = (Model) => ({
         });
       }
       
-      // Detectar error de foreign key por patrón de mensaje
       if (err.message && err.message.includes('foreign key')) {
         return res.status(409).json({
           success: false,
@@ -115,6 +115,7 @@ module.exports = (Model) => ({
     }
   },
 
+  // Actualiza un registro por ID
   update: async (req, res) => {
     try {
       if (!req.params.id || isNaN(req.params.id)) {
@@ -132,12 +133,12 @@ module.exports = (Model) => ({
         });
       }
       
-      const [updatedCount] = await Model.update(req.body, {
+      const [conteoActualizado] = await Modelo.update(req.body, {
         where: { id: req.params.id },
         individualHooks: true
       });
       
-      if (updatedCount === 0) {
+      if (conteoActualizado === 0) {
         return res.status(404).json({
           success: false,
           error: 'Registro no encontrado',
@@ -151,27 +152,27 @@ module.exports = (Model) => ({
         id: req.params.id
       });
     } catch (err) {
-      console.error(`[ERROR] update:`, err.message);
+      console.error(`[ERROR] actualizar:`, err.message);
       
       if (err.name === 'SequelizeUniqueConstraintError') {
-        const fields = err.errors.map(e => e.path).join(', ');
+        const campos = err.errors.map(e => e.path).join(', ');
         return res.status(409).json({
           success: false,
           error: 'Conflicto: Campo duplicado',
-          fields: fields,
-          message: `Los campos ${fields} ya existen en la base de datos`
+          fields: campos,
+          message: `Los campos ${campos} ya existen en la base de datos`
         });
       }
       
       if (err.name === 'SequelizeValidationError') {
-        const errors = err.errors.map(e => ({
+        const errores = err.errors.map(e => ({
           field: e.path,
           message: e.message
         }));
         return res.status(422).json({
           success: false,
           error: 'Error de validación',
-          validationErrors: errors
+          validationErrors: errores
         });
       }
       
@@ -183,8 +184,6 @@ module.exports = (Model) => ({
           details: err.message
         });
       }
-      
-      // Detectar error de foreign key por patrón de mensaje
       if (err.message && err.message.includes('foreign key')) {
         return res.status(409).json({
           success: false,
@@ -202,6 +201,7 @@ module.exports = (Model) => ({
     }
   },
 
+  // Elimina un registro por ID
   delete: async (req, res) => {
     try {
       if (!req.params.id || isNaN(req.params.id)) {
@@ -211,11 +211,11 @@ module.exports = (Model) => ({
         });
       }
       
-      const deletedCount = await Model.destroy({
+      const conteoEliminado = await Modelo.destroy({
         where: { id: req.params.id }
       });
       
-      if (deletedCount === 0) {
+      if (conteoEliminado === 0) {
         return res.status(404).json({
           success: false,
           error: 'Registro no encontrado',

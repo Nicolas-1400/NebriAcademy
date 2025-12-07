@@ -3,16 +3,22 @@ const path = require('path');
 const sequelize = require('../database/connection');
 const Apuntes = require('../models/Apuntes');
 
-const jsonPath = path.join(__dirname, '..', 'test-jsons', 'apuntes.json');
-function readSample(){return JSON.parse(fs.readFileSync(jsonPath,'utf8'));}
+const rutaJson = path.join(__dirname, '..', 'test-jsons', 'apuntes.json');
+// Lee el archivo JSON de ejemplo
+function leerMuestra(){return JSON.parse(fs.readFileSync(rutaJson,'utf8'));}
 
-async function createApunte(data){const c=await Apuntes.create(data);console.log('createApunte:',c.toJSON());return c}
-async function getApuntes(){const rows=await Apuntes.findAll();console.log('getApuntes count=',rows.length);return rows.map(r=>r.toJSON())}
-async function updateApunte(id,changes){const inst=await Apuntes.findByPk(id);if(!inst)return null;Object.keys(changes).forEach(k=>inst.set(k,changes[k]));await inst.save();console.log('updateApunte:',inst.toJSON());return inst}
-async function deleteApunte(id){const inst=await Apuntes.findByPk(id);if(!inst)return false;await inst.destroy();console.log('deleteApunte id=',id);return true}
+// Crea un nuevo apunte
+async function crearApunte(datos){const creado=await Apuntes.create(datos);console.log('crearApunte:',creado.toJSON());return creado}
+// Obtiene todos los apuntes
+async function obtenerApuntes(){const filas=await Apuntes.findAll();console.log('obtenerApuntes count=',filas.length);return filas.map(f=>f.toJSON())}
+// Actualiza un apunte por id
+async function actualizarApunte(id,cambios){const inst=await Apuntes.findByPk(id);if(!inst)return null;Object.keys(cambios).forEach(k=>inst.set(k,cambios[k]));await inst.save();console.log('actualizarApunte:',inst.toJSON());return inst}
+// Elimina un apunte por id
+async function eliminarApunte(id){const inst=await Apuntes.findByPk(id);if(!inst)return false;await inst.destroy();console.log('eliminarApunte id=',id);return true}
 
-async function demo(){try{await sequelize.sync();console.log('Demo Apuntes');await getApuntes();const sample=readSample();const c=await createApunte(sample);await getApuntes();await updateApunte(c.id||c[Apuntes.primaryKeyAttribute],{contenido:(sample.contenido||'')+' - demo'});await deleteApunte(c.id||c[Apuntes.primaryKeyAttribute]);await sequelize.close();console.log('Demo Apuntes done')}catch(err){console.error(err.message||err);try{await sequelize.close()}catch(e){}process.exit(1)}}
+// Demo de uso
+async function demostración(){try{await sequelize.sync();console.log('Demostración Apuntes');await obtenerApuntes();const muestra=leerMuestra();const creado=await crearApunte(muestra);await obtenerApuntes();await actualizarApunte(creado.id||creado[Apuntes.primaryKeyAttribute],{contenido:(muestra.contenido||'')+' - demostración'});await eliminarApunte(creado.id||creado[Apuntes.primaryKeyAttribute]);await sequelize.close();console.log('Demostración Apuntes completada')}catch(err){console.error(err.message||err);try{await sequelize.close()}catch(e){}process.exit(1)}}
 
-if(require.main===module) demo();
+if(require.main===module) demostración();
 
-module.exports={createApunte,getApuntes,updateApunte,deleteApunte};
+module.exports={crearApunte,obtenerApuntes,actualizarApunte,eliminarApunte};

@@ -3,30 +3,36 @@ const path = require('path');
 const sequelize = require('../database/connection');
 const Alumnos = require('../models/Alumnos');
 
-const jsonPath = path.join(__dirname, '..', 'test-jsons', 'alumnos.json');
+const rutaJson = path.join(__dirname, '..', 'test-jsons', 'alumnos.json');
 
-function readSample() { return JSON.parse(fs.readFileSync(jsonPath, 'utf8')); }
+// Lee el archivo JSON de ejemplo
+function leerMuestra() { return JSON.parse(fs.readFileSync(rutaJson, 'utf8')); }
 
-async function createAlumno(data) { const c = await Alumnos.create(data); console.log('createAlumno:', c.toJSON()); return c; }
-async function getAlumnos() { const rows = await Alumnos.findAll(); console.log('getAlumnos count=', rows.length); return rows.map(r=>r.toJSON()); }
-async function updateAlumno(id, changes) { const inst = await Alumnos.findByPk(id); if(!inst) return null; Object.keys(changes).forEach(k=>inst.set(k,changes[k])); await inst.save(); console.log('updateAlumno:', inst.toJSON()); return inst; }
-async function deleteAlumno(id) { const inst = await Alumnos.findByPk(id); if(!inst) return false; await inst.destroy(); console.log('deleteAlumno id=',id); return true; }
+// Crea un nuevo alumno
+async function crearAlumno(datos) { const creado = await Alumnos.create(datos); console.log('crearAlumno:', creado.toJSON()); return creado; }
+// Obtiene todos los alumnos
+async function obtenerAlumnos() { const filas = await Alumnos.findAll(); console.log('obtenerAlumnos count=', filas.length); return filas.map(f=>f.toJSON()); }
+// Actualiza un alumno por id
+async function actualizarAlumno(id, cambios) { const inst = await Alumnos.findByPk(id); if(!inst) return null; Object.keys(cambios).forEach(k=>inst.set(k,cambios[k])); await inst.save(); console.log('actualizarAlumno:', inst.toJSON()); return inst; }
+// Elimina un alumno por id
+async function eliminarAlumno(id) { const inst = await Alumnos.findByPk(id); if(!inst) return false; await inst.destroy(); console.log('eliminarAlumno id=',id); return true; }
 
-async function demo() {
+// Demo de uso
+async function demostración() {
   try {
     await sequelize.sync();
-    console.log('Demo Alumnos');
-    await getAlumnos();
-    const sample = readSample();
-    const c = await createAlumno(sample);
-    await getAlumnos();
-    await updateAlumno(c.id || c[Alumnos.primaryKeyAttribute], { nombre: (sample.nombre||'') + ' - demo' });
-    await deleteAlumno(c.id || c[Alumnos.primaryKeyAttribute]);
+    console.log('Demostración Alumnos');
+    await obtenerAlumnos();
+    const muestra = leerMuestra();
+    const creado = await crearAlumno(muestra);
+    await obtenerAlumnos();
+    await actualizarAlumno(creado.id || creado[Alumnos.primaryKeyAttribute], { nombre: (muestra.nombre||'') + ' - demostración' });
+    await eliminarAlumno(creado.id || creado[Alumnos.primaryKeyAttribute]);
     await sequelize.close();
-    console.log('Demo Alumnos done');
+    console.log('Demostración Alumnos completada');
   } catch (err) { console.error(err.message||err); try{await sequelize.close();}catch(e){} process.exit(1);} 
 }
 
-if(require.main===module) demo();
+if(require.main===module) demostración();
 
-module.exports = { createAlumno, getAlumnos, updateAlumno, deleteAlumno };
+module.exports = { crearAlumno, obtenerAlumnos, actualizarAlumno, eliminarAlumno };

@@ -3,16 +3,22 @@ const path = require('path');
 const sequelize = require('../database/connection');
 const Videos = require('../models/Videos');
 
-const jsonPath = path.join(__dirname, '..', 'test-jsons', 'videos.json');
-function readSample(){return JSON.parse(fs.readFileSync(jsonPath,'utf8'));}
+const rutaJson = path.join(__dirname, '..', 'test-jsons', 'videos.json');
+// Lee el archivo JSON de ejemplo
+function leerMuestra(){return JSON.parse(fs.readFileSync(rutaJson,'utf8'));}
 
-async function createVideo(data){const c=await Videos.create(data);console.log('createVideo:',c.toJSON());return c}
-async function getVideos(){const rows=await Videos.findAll();console.log('getVideos count=',rows.length);return rows.map(r=>r.toJSON())}
-async function updateVideo(id,changes){const inst=await Videos.findByPk(id);if(!inst)return null;Object.keys(changes).forEach(k=>inst.set(k,changes[k]));await inst.save();console.log('updateVideo:',inst.toJSON());return inst}
-async function deleteVideo(id){const inst=await Videos.findByPk(id);if(!inst)return false;await inst.destroy();console.log('deleteVideo id=',id);return true}
+// Crea un nuevo video
+async function crearVideo(datos){const creado=await Videos.create(datos);console.log('crearVideo:',creado.toJSON());return creado}
+// Obtiene todos los videos
+async function obtenerVideos(){const filas=await Videos.findAll();console.log('obtenerVideos count=',filas.length);return filas.map(f=>f.toJSON())}
+// Actualiza un video por id
+async function actualizarVideo(id,cambios){const inst=await Videos.findByPk(id);if(!inst)return null;Object.keys(cambios).forEach(k=>inst.set(k,cambios[k]));await inst.save();console.log('actualizarVideo:',inst.toJSON());return inst}
+// Elimina un video por id
+async function eliminarVideo(id){const inst=await Videos.findByPk(id);if(!inst)return false;await inst.destroy();console.log('eliminarVideo id=',id);return true}
 
-async function demo(){try{await sequelize.sync();console.log('Demo Videos');await getVideos();const sample=readSample();const c=await createVideo(sample);await getVideos();await updateVideo(c.id||c[Videos.primaryKeyAttribute],{duracion:(sample.duracion||0)+1});await deleteVideo(c.id||c[Videos.primaryKeyAttribute]);await sequelize.close();console.log('Demo Videos done')}catch(err){console.error(err.message||err);try{await sequelize.close()}catch(e){}process.exit(1)}}
+// Demo de uso
+async function demostración(){try{await sequelize.sync();console.log('Demostración Videos');await obtenerVideos();const muestra=leerMuestra();const creado=await crearVideo(muestra);await obtenerVideos();await actualizarVideo(creado.id||creado[Videos.primaryKeyAttribute],{duracion:(muestra.duracion||0)+1});await eliminarVideo(creado.id||creado[Videos.primaryKeyAttribute]);await sequelize.close();console.log('Demostración Videos completada')}catch(err){console.error(err.message||err);try{await sequelize.close()}catch(e){}process.exit(1)}}
 
-if(require.main===module) demo();
+if(require.main===module) demostración();
 
-module.exports={createVideo,getVideos,updateVideo,deleteVideo};
+module.exports={crearVideo,obtenerVideos,actualizarVideo,eliminarVideo};
