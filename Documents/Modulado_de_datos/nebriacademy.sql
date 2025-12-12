@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-11-2025 a las 10:16:54
+-- Tiempo de generación: 12-12-2025 a las 20:43:43
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -46,7 +46,8 @@ CREATE TABLE `administradores` (
 --
 
 INSERT INTO `administradores` (`id`, `usuarioId`, `dni`, `nombre`, `apellidos`, `email`, `contrasena`, `numTelefono`, `redes`, `pais`, `localidad`) VALUES
-(1, 1, '00000000A', 'Carlos', 'Ramírez López', 'admin@nebriacademy.com', 'admin123', '600000000', '@adminCarlos', 'España', 'Madrid');
+(1, 1, '00000000A', 'Carlos', 'Ramírez López', 'admin@nebriacademy.com', 'admin123', '600000000', '@adminCarlos', 'España', 'Madrid'),
+(2, 8, '7592675943d', 'Ramiro', 'Pelotingas', 'ramiropelotingas@gmail.com', '123456782', '765936509', NULL, 'España', 'Barcelona');
 
 -- --------------------------------------------------------
 
@@ -274,7 +275,8 @@ INSERT INTO `usuarios` (`id`, `tipo`) VALUES
 (2, 'alumno'),
 (3, 'alumno'),
 (4, 'profesor'),
-(5, 'profesor');
+(5, 'profesor'),
+(8, 'administrador');
 
 -- --------------------------------------------------------
 
@@ -407,7 +409,7 @@ ALTER TABLE `videos`
 -- AUTO_INCREMENT de la tabla `administradores`
 --
 ALTER TABLE `administradores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `alumnos`
@@ -467,7 +469,7 @@ ALTER TABLE `puntuacionesejercicios`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `videos`

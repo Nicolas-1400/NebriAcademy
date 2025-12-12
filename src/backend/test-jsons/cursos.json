@@ -1,9 +1,0 @@
-{
-  "nombreCurso": "Introducción a Node.js",
-  "categoria": "Desarrollo",
-  "profesor": 3,
-  "nivel": "Básico",
-  "valoracion": 4.5,
-  "comentarios": "Curso práctico de inicio",
-  "descripcion": "Aprende fundamentos de Node.js y Express."
-}
