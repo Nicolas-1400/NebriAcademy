@@ -1,4 +1,4 @@
-import { where } from 'sequelize';
+/* import { where } from 'sequelize';
 import sequelize from '../database/connection.js';
 import Administradores from '../models/Administradores.js';
 import Alumnos from '../models/Alumnos.js';
@@ -21,7 +21,7 @@ sequelize.sync().then(() => {
             where:{
                 nombre: "Ramiro"
         }}).then((res) => {
-            console.log(res);
+            res.json('/administradores', {data: res});
         }).catch((error) => {
             console.error('Falla la selección de los registros:', error);
         })
