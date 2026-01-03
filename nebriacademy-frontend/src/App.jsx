@@ -1,7 +1,7 @@
 import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Home from "./Pages/Home";
-import Alumnos from "./Pages/Alumnos";
+import Users from "./Pages/Users";
 import Cursos from "./Pages/Cursos";
 import AppLayout from "./Components/AppLayout";
 import ErrorPage from "./Pages/ErrorPage";
@@ -20,11 +20,11 @@ const router = createBrowserRouter([
 				element: <Home />,
 			},
 			{
-				path: "/alumnos",
-				element: <Alumnos />,
+				path: "/users",
+				element: <Users />,
 
 				loader: async () => {
-					const res = await fetch("https://jsonplaceholder.typicode.com/alumnos");
+					const res = await fetch("https://jsonplaceholder.typicode.com/users");
 					return res.json();
 				},
 			},

@@ -11,7 +11,7 @@ function Nav() {
               <Link to='/'>Mi Academia</Link> 
             </li>
             <li>
-              <Link to='/alumnos'>Alumnos</Link> 
+              <Link to='/users'>Alumnos</Link> 
             </li>
             <li>
               <Link to='/cursos'>Cursos</Link> 
