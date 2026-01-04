@@ -1,11 +1,11 @@
-import "./App.css";
+import "./style/global.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import Home from "./Pages/Home";
-import Users from "./Pages/Users";
-import Cursos from "./Pages/Cursos";
+import Home from "./pages/Home";
+import Users from "./pages/Users";
+import Cursos from "./pages/Cursos";
 import AppLayout from "./Components/AppLayout";
-import ErrorPage from "./Pages/ErrorPage";
-import MasterClass from "./Pages/MasterClass";
+import ErrorPage from "./pages/ErrorPage";
+import MasterClass from "./pages/MasterClass";
 
 //Esto es con React Router versión 6.
 
