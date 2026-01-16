@@ -3,9 +3,9 @@ import "../style/Cursos.css";
 
 
 function Cursos() {
-	return (
-		<>
-			<div className="cursos-page">
+    return (
+        <>
+            <div className="cursos-page">
 
   <aside className="filters">
     <h3>Filtros</h3>
@@ -45,8 +45,8 @@ function Cursos() {
 
 </div>
 
-		</>
-	);
+        </>
+    );
 }
 
 export default Cursos;
